@@ -1,0 +1,45 @@
+﻿@page "/agregarproducto"
+@inject HttpClient Http
+@inherits InformacionProductoBase.InformacionProductoBase
+<h3>Añadir producto</h3>
+
+<div class="row content">
+	<div class="col-md-2">
+		Producto
+	</div>
+
+	<div class=col-md-4>
+		<input class="form-control" @bind="Producto.Nombre" />
+	</div>
+</div>
+
+<div class="row content">
+	<div class="col-md-2">
+		Estado
+	</div>
+
+	<div class=col-md-4>
+		<input class="form-control" @bind="Producto.Estado" />
+	</div>
+</div>
+
+<div class="row content">
+	<div class="col-md-2">
+		Categoria
+	</div>
+
+	<div class=col-md-4>
+		<input class="form-control" @bind="Producto.Categoria" />
+	</div>
+</div>
+
+
+<div class="row content">
+	<div class="col-md-2">
+	</div>
+
+	<div class=col-md-4>
+		<input type="button" value="Guardar" @onclick="() => GuardarProducto()" />
+	</div>
+</div>
+

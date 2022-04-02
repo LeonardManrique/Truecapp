@@ -1,0 +1,48 @@
+﻿@page "/user/delete/{userId:int}"
+@page "/eliminarproducto"
+@using Truecapp2.Entities
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+<h2>Eliminar Producto</h2>
+<br />
+<div class="form-group">
+    <h4>Seleccione el producto que desea aliminar</h4>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>Producto</td>
+                <td>@producto.Nombre</td>
+            </tr>
+            <tr>
+                <td>Estado</td>
+                <td>@producto.Estado</td>
+            </tr>
+            <tr>
+                <td>Categoria</td>
+                <td>@producto.Categoria</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="form-group">
+    <input type="submit" value="Eliminar" @onclick="(async () => await RemoveUser(producto.Codigo))" class="btn btn-danger" />
+    <input type="submit" value="Cancelar" @onclick="(() => Cancel())" class="btn btn-warning" />
+</div>
+@code {
+    [Parameter]
+    public int Codigo { get; set; }
+    Producto producto = new Producto();
+    protected override async Task OnInitializedAsync()
+    {
+        producto = await Http.GetFromJsonAsync<Producto>("/api/Producto/" + Convert.ToInt32(Codigo));
+    }
+    protected async Task RemoveUser(int id)
+    {
+        await Http.DeleteAsync("api/Producto/" + id);
+        NavigationManager.NavigateTo("/fetchuserdetails");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/fetchuserdetails");
+    }
+}

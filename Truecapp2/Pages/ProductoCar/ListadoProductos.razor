@@ -1,0 +1,99 @@
+﻿@page "/listadoproductos"
+@using Truecapp2.Entities
+@inherits InformacionProductoBase.InformacionProductoBase
+@inject HttpClient Http
+<h1>Productos disponibles</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <a href='/user/add' class="btn btn-primary" role="button">
+            <i class="fas fa-user-plus"></i>
+            Buscar producto
+        </a>
+    </div>
+    <div class="input-group col">
+        <input type="text" class="form-control" placeholder="Buscar producto por categoria"
+               @bind="SearchString" @bind:event="oninput" @onkeyup="FilterUser" />
+        @if (SearchString.Length > 0)
+        {
+            <div class="input-group-append">
+                <button class="btn btn-danger" @onclick="ResetSearch">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        }
+    </div>
+</div>
+<br />
+@if (productoLista == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table table-striped align-middle table-bordered">
+        <thead class="table-success">
+            <tr>
+                <th>Producto</th>
+                <th>Estado</th>
+                <th>Categoria</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in productoLista)
+            {
+                <tr>
+                    <td>@producto.Nombre</td>
+                    <td>@producto.Estado</td>
+                    <td>@Producto.Categoria</td>
+                    <td>
+                        <a href='/user/edit/@producto.Codigo' class="btn btn-outline-dark" role="button">
+                            Editar
+                        </a>
+                        <a href='/user/delete/@producto.Codigo' class="btn btn-outline-danger" role="button">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+@code {
+    protected List<Producto> productoLista = new();
+    protected List<Producto> searchUserData = new();
+    protected Producto user = new();
+    protected string SearchString { get; set; } = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUser();
+    }
+    protected async Task GetUser()
+    {
+      // productoLista = await Http.GetFromJsonAsync<List<>>("api/Producto");
+        searchUserData = productoLista;
+    }
+    protected void FilterUser()
+    {
+        if (!string.IsNullOrEmpty(SearchString))
+        {
+            productoLista = searchUserData
+                .Where(x => x.Nombre.IndexOf(SearchString, StringComparison.OrdinalIgnoreCase) != -1)
+                .ToList();
+        }
+        else
+        {
+            productoLista = searchUserData;
+        }
+    }
+    protected void DeleteConfirm(int ID)
+    {
+        user = productoLista.FirstOrDefault(x => x.Codigo == ID);
+    }
+    public void ResetSearch()
+    {
+        SearchString = string.Empty;
+        productoLista = searchUserData;
+    }
+}
